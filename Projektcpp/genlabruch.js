@@ -1,10 +1,16 @@
-
 //Tu jest wszystko do gnerowania labiryntu i do ruchu
-function moveBy(x,y){
-
-  const tempx = Math.round((gx + grid*x) / grid);
-  const tempy = Math.round((gy + grid*y) / grid);
-
+let fazaruchuhipka = 0;
+  let hipekruch = 0;
+  let kierunekgo = "left";
+function moveBy(x,y){const tempx = Math.round((gx + grid*x) / grid);
+  if(czyterazwruchujest) return;
+  if(x < 0){
+    kierunekgo = "1";
+}
+if(x > 0){
+    kierunekgo = "2";
+}
+const tempy = Math.round((gy + grid*y) / grid);
   if (
     tempy >= 0 &&
     tempy < mapa.length &&
@@ -13,15 +19,61 @@ function moveBy(x,y){
   ) {
     if (mapa[tempy][tempx] == 0){
       gx += grid * x;
-      gy += grid * y;
+gy += grid * y;
+g3X = gx;
+g3Y = gy;
+czyterazwruchujest = true;
       renderFrame();
     }
     if (mapa[tempy][tempx] == 2){
       gx += grid * x;
-      gy += grid * y;
+gy += grid * y;
+g3X = gx;
+g3Y = gy;
+czyterazwruchujest = true;
+      renderFrame();
+    }
+    if (mapa[tempy][tempx] == 3){
+      gx += grid * x;
+gy += grid * y;
+g3X = gx;
+g3Y = gy;
+czyterazwruchujest = true;
       renderFrame();
     }
   }
+}
+function animacjaruchugracza(){
+  const speedruchu = 5;
+  if(g2X < g3X){
+    g2X = Math.min(g2X + speedruchu, g3X);
+  }
+  if(g2X > g3X){
+    g2X = Math.max(g2X - speedruchu, g3X);
+  }
+  if(g2Y < g3Y){
+    g2Y = Math.min(g2Y + speedruchu, g3Y);
+  }
+  if(g2Y > g3Y){
+    g2Y = Math.max(g2Y - speedruchu, g3Y);
+  }
+  czyterazwruchujest = g2X !== g3X || g2Y !== g3Y;
+  if(czyterazwruchujest){
+    hipekruch++;
+    if(hipekruch > 5){
+    hipekruch = 0;
+      if(fazaruchuhipka === 1){
+        fazaruchuhipka = 2;
+    } else {
+        fazaruchuhipka = 1;
+    }
+}
+  }
+  else{
+    fazaruchuhipka = 0;
+  }
+  renderFrame();
+  requestAnimationFrame(animacjaruchugracza);
 }
 function maparys(cameraX, cameraY){
   for (let y = 0; y < mapa.length; y++){
@@ -34,6 +86,9 @@ if (mapa[y][x] == 1){
 }
 else if (mapa[y][x] == 2){
   texture = wejscie;
+}
+else if (mapa[y][x] == 3){
+  texture = zejscie;
 }
 else{
   texture = floor;
@@ -49,9 +104,7 @@ ctx.drawImage(
   }
 }
 function naprawascian(){
-
   const chunkSize = 9;
-
   const xchunkow = 8;
   const ychunkow = 4;
 
@@ -121,19 +174,58 @@ function naprawascian(){
     }
   }
 }
+function agdziewyjscie(){
+  const minDistance = 20;
+  const playerTileX = gx / grid;
+  const playerTileY = gy / grid;
+  while(true){
+    let x = Math.floor(Math.random() * mapa[0].length);
+    let y = Math.floor(Math.random() * mapa.length);
+    if(mapa[y][x] == 0){
+
+      const dx = x - playerTileX;
+      const dy = y - playerTileY;
+      const distance = Math.sqrt(dx*dx + dy*dy);
+      if(distance >= minDistance){
+
+        mapa[y][x] = 3;
+        return;
+      }
+    }
+  }
+}
 function renderFrame(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const cameraX = gx - canvas.width / 2 + grid / 2;
-  const cameraY = gy - canvas.height / 2 + grid / 2;
+  const cameraX = g2X - canvas.width / 2 + grid / 2;
+  const cameraY = g2Y - canvas.height / 2 + grid / 2;
   maparys(cameraX, cameraY);
-  ctx.fillStyle = "blue";
-  ctx.fillRect(
-    canvas.width / 2 - grid / 2,
-    canvas.height / 2 - grid / 2,
-    grid,
-    grid
-  );
-}
+  let teksturagracza;
+if(kierunekgo === "2"){
+    if(fazaruchuhipka === 0){
+        teksturagracza = player1;
+    }
+    else if(fazaruchuhipka === 1){
+        teksturagracza = player2;
+    }
+    else{
+        teksturagracza = player3;
+    }
+
+}else{
+    if(fazaruchuhipka === 0){
+        teksturagracza = player4;
+    }
+    else if(fazaruchuhipka === 1){
+        teksturagracza = player5;
+    }
+    else{
+        teksturagracza = player6;
+    }
+  }
+    ctx.drawImage(
+      teksturagracza,
+      Math.round(canvas.width / 2 - grid / 2),Math.round(canvas.height / 2 - grid / 2),grid,grid
+    );}
 function losowyresp(){
 
   while (true){
@@ -142,7 +234,10 @@ function losowyresp(){
     if (mapa[y][x] == 0){
       gx = x * grid;
 gy = y * grid;
-
+g2X = gx;
+g2Y = gy;
+g3X = gx;
+g3Y = gy;
 mapa[y][x] = 2;
       return;
     }
@@ -162,32 +257,12 @@ ctx.fillText("Loading", canvas.width/2, canvas.height/2);
 const grid = 50;
 let gx = 50;
 let gy = 50;
+let g2X = gx;
+let g2Y = gy;
+let g3X = gx;
+let g3Y = gy;
+let czyterazwruchujest = false;
 let mapa = []
-const wall = new Image();
-wall.src = "wall_front.png";
-wall.width = 50
-wall.height = 50
-const floor = new Image();
-floor.src = "floor.png";
-floor.width = 50
-floor.height = 50
-const wejscie = new Image();
-wejscie.src = "wejscie.png";
-wejscie.width = 50;
-wejscie.height = 50;
-let floor_loaded = false
-let wall_loaded = false
-let wejscie_loaded = false;
-
-floor.onload = () => {
-  floor_loaded = true
-};
-wall.onload = () =>{
-  wall_loaded = true
-}
-wejscie.onload = () => {
-  wejscie_loaded = true;
-};
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -203,7 +278,7 @@ const fullheight = 4;
   }
   for(let gy=0; gy < fullheight;gy++){
     for(let gx =0; gx < fullwidth;gx++){
-       let losowanie = Math.floor(Math.random() * 4) + 1;
+       let losowanie = Math.floor(Math.random() * 8) + 1;
        let wylosowanychunk = []
       if (losowanie==1){
        wylosowanychunk=chunk1
@@ -220,6 +295,24 @@ const fullheight = 4;
             if (losowanie==4){
               wylosowanychunk=chunk4
       }
+      else{
+        if(losowanie==5){
+          wylosowanychunk=chunk5
+        }
+        else{
+        if(losowanie==6){
+          wylosowanychunk=chunk6
+        }
+        else{
+        if(losowanie==7){
+          wylosowanychunk=chunk7
+        }
+        else{
+        if(losowanie==8){
+          wylosowanychunk=chunk8
+        }}}
+        }
+      }
     }
   }
 }
@@ -235,16 +328,18 @@ const fullheight = 4;
   }
 }
 async function main(){
-  while (!(wall_loaded && floor_loaded && wejscie_loaded)){
+while (!(wall_loaded &&floor_loaded &&wejscie_loaded &&zejscie_loaded &&player1_loaded &&player2_loaded &&player3_loaded)){
     await sleep(1000)
   }
   stworzmape();
   naprawascian();
   losowyresp();
+  agdziewyjscie();
+  animacjaruchugracza();
   
   console.log('aa')
   window.addEventListener("keydown", (a) => {
-    slow = {'a':[-1,0],'d':[1,0],'w':[0,-1],'s':[0,1]}
+    slow = {a:[-1,0],d:[1,0],w:[0,-1],s:[0,1]}
     if (a.key in slow){moveBy(...slow[a.key]);}
     });
   renderFrame()
