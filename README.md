@@ -14,3 +14,5 @@ E - ekwipunek
 W ekwipunku używanie rzeczy - Kliknięcie myszką
 
 Czytanie znaków/zejście w dół - spacja
+
+Usuwanie przedmiotów z ekwipunku - x podczas najechania myszką na przedmiot
