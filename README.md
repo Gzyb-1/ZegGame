@@ -4,8 +4,13 @@ Tytuł - Gra przeglądarkowa Labirynt. Opis - Cel projektu to stworzenie nowocze
 Wcielasz się w postać, która żyje w mieście pod którym leży bardzo stary labirynt. Nikt już nie wie, po co ten labirynt był pierwotnie skonstruowany, ale przez ostatni rok z labiryntu zaczeły wychodzić różne stwory, z czym nigdy nie było problemu. Miasto zaczeło wysyłać tam patrole, ale z czasem przestało to działać. Jako osoba która podobnymi sprawami się już zajmowała, postanowiłeś wejść do labiryntu, i rozwiązać problem samemu.
 # Sterowanie
 WASD - ruch
+
 Strzałki - atak
+
 Q - pominięcie tury
+
 E - ekwipunek
+
 W ekwipunku używanie rzeczy - Kliknięcie myszką
+
 Czytanie znaków/zejście w dół - spacja
